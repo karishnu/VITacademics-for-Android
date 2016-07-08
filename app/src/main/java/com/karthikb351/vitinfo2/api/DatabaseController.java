@@ -40,6 +40,7 @@ import com.karthikb351.vitinfo2.contract.GradeCount;
 import com.karthikb351.vitinfo2.contract.Message;
 import com.karthikb351.vitinfo2.contract.SemesterWiseGrade;
 import com.karthikb351.vitinfo2.contract.WithdrawnCourse;
+import com.karthikb351.vitinfo2.response.FacultyResponse;
 import com.karthikb351.vitinfo2.response.GradesResponse;
 import com.karthikb351.vitinfo2.response.LoginResponse;
 import com.karthikb351.vitinfo2.response.RefreshResponse;
@@ -122,6 +123,32 @@ public class DatabaseController {
         editor.apply();
 
         resultListener.onSuccess();
+    }
+
+    public void saveFaculty(final FacultyResponse facultyResponse,final ResultListener resultListener){
+
+        new AsyncTask<Boolean, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Boolean... params){
+                try {
+                    //TODO: Check for repetition
+                    facultyResponse.save();
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            @Override
+            protected void onPostExecute(Boolean result) {
+                if (result) {
+                    resultListener.onSuccess();
+                } else {
+                    resultListener.onFailure(new com.karthikb351.vitinfo2.model.Status(StatusCodes.UNKNOWN, context.getResources().getString(R.string.api_unknown_error)));
+                }
+            }
+        }.execute(true);
     }
 
     public void saveCourses(final RefreshResponse refreshResponse, final ResultListener resultListener) {

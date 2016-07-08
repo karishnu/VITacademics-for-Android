@@ -33,6 +33,7 @@ import com.google.gson.GsonBuilder;
 import com.karthikb351.vitinfo2.R;
 import com.karthikb351.vitinfo2.contract.Friend;
 import com.karthikb351.vitinfo2.model.Status;
+import com.karthikb351.vitinfo2.response.FacultyResponse;
 import com.karthikb351.vitinfo2.response.GradesResponse;
 import com.karthikb351.vitinfo2.response.LoginResponse;
 import com.karthikb351.vitinfo2.response.RefreshResponse;
@@ -166,6 +167,37 @@ public class VITacademicsAPI {
             }
         });
 
+    }
+
+    public void faculty(final String campus, final String name, final ResultListener resultListener) {
+        service.faculty(campus, name, new Callback<FacultyResponse>() {
+            @Override
+            public void success(final FacultyResponse facultyResponse, Response response) {
+                switch (facultyResponse.getStatus().getCode()) {
+                    case StatusCodes.SUCCESS:
+                        databaseController.saveFaculty(facultyResponse, new ResultListener() {
+                            @Override
+                            public void onSuccess() {
+                                resultListener.onSuccess();
+                            }
+
+                            @Override
+                            public void onFailure(Status status) {
+                                resultListener.onFailure(status);
+                            }
+                        });
+                        break;
+                    default:
+                        resultListener.onFailure(facultyResponse.getStatus());
+                        break;
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                resultListener.onFailure(new Status(StatusCodes.MAINTENANCE_DOWN, context.getResources().getString(R.string.api_server_error)));
+            }
+        });
     }
 
     public void token(final String campus, final String regno, final String dob, final String mobile, final ResultListener resultListener) {

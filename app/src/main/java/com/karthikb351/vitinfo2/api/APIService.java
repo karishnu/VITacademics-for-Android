@@ -27,6 +27,7 @@
 package com.karthikb351.vitinfo2.api;
 
 import com.karthikb351.vitinfo2.contract.Friend;
+import com.karthikb351.vitinfo2.response.FacultyResponse;
 import com.karthikb351.vitinfo2.response.GradesResponse;
 import com.karthikb351.vitinfo2.response.LoginResponse;
 import com.karthikb351.vitinfo2.response.RefreshResponse;
@@ -68,4 +69,8 @@ public interface APIService {
     @FormUrlEncoded
     @POST("/api/v2/{campus}/share")
     void share(@Path("campus") String campus, @Field("regno") String regno, @Field("dob") String dob, @Field("mobile") String mobile, @Field("receiver") String receiver, Callback<Friend> callback);
+
+    @FormUrlEncoded
+    @POST("/api/v2/{campus}/faculty")
+    void faculty(@Path("campus") String campus, @Field("name") String name, Callback<FacultyResponse> callback);
 }
